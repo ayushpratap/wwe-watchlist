@@ -486,6 +486,14 @@ let chatHistory = [];
             window.open(url, '_blank');
         }
 
+        window.resetProgress = function() {
+            if(confirm("Are you sure you want to reset all progress? This cannot be undone.")) {
+                watchedItems = [];
+                renderApp();
+                updateCloudStorage();
+            }
+        }
+
         // --- STORY SO FAR LOGIC ---
         window.toggleStoryModal = function() {
             storyModal.classList.toggle('hidden');
@@ -635,6 +643,67 @@ let chatHistory = [];
             const progress = totalItems > 0 ? Math.round((watchedItems.length / totalItems) * 100) : 0;
             if(progressBar) progressBar.style.width = `${progress}%`;
             if(progressText) progressText.innerText = `${progress}% Completed`;
+
+            // --- GAMIFICATION UPDATE ---
+            const stats = calculateXP();
+            const rank = getRank(stats.xp);
+            
+            // Update Rank UI
+            document.getElementById('rank-xp').innerText = `${stats.xp} XP`;
+            document.getElementById('rank-title').innerText = rank.title;
+            document.getElementById('rank-icon').innerHTML = rank.icon;
+            
+            // Update Rank Progress Bar (re-using the main progress bar for now, or we could add a specific one)
+            // For now, let's just update the "Next Rank" text
+            const nextRankText = document.getElementById('next-rank-text');
+            if (nextRankText) {
+                if (rank.nextXp) {
+                    nextRankText.innerText = `Next: ${rank.nextTitle} (${rank.nextXp - stats.xp} XP to go)`;
+                } else {
+                    nextRankText.innerText = "Max Rank Achieved!";
+                }
+            }
+        }
+
+        // --- GAMIFICATION LOGIC ---
+        function calculateXP() {
+            let xp = 0;
+            scheduleData.forEach(month => {
+                month.events.forEach(event => {
+                    if (watchedItems.includes(event.id)) {
+                        if (event.type === 'ple') xp += 50;
+                        else xp += 10;
+                    }
+                });
+            });
+            return { xp };
+        }
+
+        function getRank(xp) {
+            const ranks = [
+                { min: 0, title: "NXT Rookie", icon: '<i class="fas fa-user-graduate"></i>' },
+                { min: 150, title: "Mid-Carder", icon: '<i class="fas fa-fist-raised"></i>' },
+                { min: 400, title: "Main Eventer", icon: '<i class="fas fa-star"></i>' },
+                { min: 800, title: "World Champion", icon: '<i class="fas fa-belt"></i>' },
+                { min: 1200, title: "Hall of Famer", icon: '<i class="fas fa-crown"></i>' }
+            ];
+
+            let currentRank = ranks[0];
+            let nextRank = ranks[1];
+
+            for (let i = 0; i < ranks.length; i++) {
+                if (xp >= ranks[i].min) {
+                    currentRank = ranks[i];
+                    nextRank = ranks[i+1] || null;
+                }
+            }
+
+            return {
+                title: currentRank.title,
+                icon: currentRank.icon,
+                nextXp: nextRank ? nextRank.min : null,
+                nextTitle: nextRank ? nextRank.title : null
+            };
         }
 
         window.toggleOracle = function() {
