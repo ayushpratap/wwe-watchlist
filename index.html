@@ -241,6 +241,34 @@
                 <!-- Content injected here -->
             </div>
         </div>
+</div>
+    </div>
+
+    <!-- API Key Modal -->
+    <div id="key-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-zinc-900 w-full max-w-md rounded-xl shadow-2xl border border-yellow-600/50 p-6 animate-fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="wwe-font text-xl text-yellow-500"><i class="fas fa-key mr-2"></i>Enter Gemini API Key</h3>
+                <button onclick="toggleKeyModal()" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+            </div>
+            <p class="text-sm text-gray-400 mb-4">
+                To use the AI features (Oracle & Story So Far), you need your own Google Gemini API Key. 
+                It is free and stored <strong>only in your browser</strong>.
+            </p>
+            <div class="space-y-4">
+                <input type="password" id="api-key-input" placeholder="Paste your API Key here..." 
+                    class="w-full bg-zinc-800 border border-zinc-700 text-white rounded px-3 py-2 focus:outline-none focus:border-yellow-500">
+                
+                <button onclick="saveApiKey()" class="w-full bg-yellow-600 hover:bg-yellow-700 text-black font-bold py-2 rounded transition-colors">
+                    Save Key
+                </button>
+                <div class="text-center">
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-xs text-blue-400 hover:underline">
+                        Get a free key here <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Footer / Controls -->
@@ -270,17 +298,38 @@
         // =========================================================================
         
         const firebaseConfig = {
-            // PASTE YOUR KEYS HERE
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+            apiKey: "AIzaSyBgMuK8eejSC8ESCartZ--E5gSef0UZFUY",
+  authDomain: "wwe-watchlist.firebaseapp.com",
+  projectId: "wwe-watchlist",
+  storageBucket: "wwe-watchlist.firebasestorage.app",
+  messagingSenderId: "767396925990",
+  appId: "1:767396925990:web:4b84ef34b4bdd97ec14ce7"
+};
 
         // --- GEMINI API (For AI Features) ---
-        const apiKey = "YOUR_GEMINI_API_KEY"; // Get from aistudio.google.com
+        // --- GEMINI API (For AI Features) ---
+        let geminiApiKey = localStorage.getItem('wwe_gemini_key') || "";
+
+        // Function to get key or prompt user
+        function getGeminiKey() {
+            if (geminiApiKey) return geminiApiKey;
+            toggleKeyModal();
+            return null;
+        }
+
+        window.saveApiKey = function() {
+            const input = document.getElementById('api-key-input');
+            if (input.value.trim()) {
+                geminiApiKey = input.value.trim();
+                localStorage.setItem('wwe_gemini_key', geminiApiKey);
+                toggleKeyModal();
+                alert("API Key saved! Try your request again.");
+            }
+        }
+
+        window.toggleKeyModal = function() {
+            document.getElementById('key-modal').classList.toggle('hidden');
+        }
 
         // -------------------------------------------------------------------------
 
@@ -814,23 +863,6 @@
                 watchedItems = [];
                 updateCloudStorage(); // Sync reset to cloud
                 renderApp();
-            }
-        }
-
-        // --- GEMINI FUNCTIONS ---
-
-        async function callGemini(prompt, systemInstruction = "") {
-            if (!apiKey || apiKey === "YOUR_GEMINI_API_KEY") {
-                return "Config Error: Please add your Gemini API Key in the code.";
-            }
-
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }]
-            };
-
-            if (systemInstruction) {
                 payload.systemInstruction = { parts: [{ text: systemInstruction }] };
             }
 
