@@ -1,0 +1,118 @@
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap");
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+h1,
+h2,
+.wwe-font {
+  font-family: "Oswald", sans-serif;
+  text-transform: uppercase;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+.checkbox-wrapper input:checked + div {
+  background-color: #22c55e;
+  border-color: #22c55e;
+}
+
+.checkbox-wrapper input:checked + div svg {
+  display: block;
+}
+
+.item-row.completed {
+  opacity: 0.5;
+  filter: grayscale(0.8);
+}
+
+.item-row.completed .show-title {
+  text-decoration: line-through;
+}
+
+/* Show Type Styles */
+.type-raw {
+  border-left: 4px solid #ef4444;
+}
+.type-smackdown {
+  border-left: 4px solid #3b82f6;
+}
+.type-ple {
+  border-left: 4px solid #eab308;
+  background: linear-gradient(
+    90deg,
+    rgba(234, 179, 8, 0.1) 0%,
+    rgba(18, 18, 18, 0) 100%
+  );
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.ai-glow {
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+.ai-glow:hover {
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.6);
+}
+
+.sparkle-btn {
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+}
+
+.typing-indicator span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: #aaa;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+  margin: 0 2px;
+}
+
+.typing-indicator span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.typing-indicator span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
