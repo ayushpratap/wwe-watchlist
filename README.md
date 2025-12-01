@@ -18,8 +18,9 @@ A web application to track your WWE watching progress throughout 2025.
 ### Installation
 1.  Clone the repository.
 2.  Open `index.html`.
-3.  Update the `firebaseConfig` object with your Firebase project details.
-4.  Update the `apiKey` variable with your Gemini API key.
+3.  Update the `firebaseConfig` object in `index.html` with your Firebase project details.
+4.  Open the app in your browser.
+5.  Enter your Gemini API Key when prompted by AI features (stored locally in your browser).
 
 ## Hosting
 This project is designed to be hosted on GitHub Pages or any static site hosting service.
